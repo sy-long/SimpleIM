@@ -4,7 +4,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    loginDialog login;
+    socketConnect c;
+    loginDialog login(&c);
     login.show();
     return a.exec();
 }

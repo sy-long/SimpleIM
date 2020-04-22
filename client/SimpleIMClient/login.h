@@ -13,7 +13,7 @@ class loginDialog : public QDialog
     Q_OBJECT
 
 public:
-    loginDialog(QWidget *parent = nullptr);
+    loginDialog(socketConnect *tsc, QWidget *parent = nullptr);
     ~loginDialog();
 
 private slots:
@@ -21,7 +21,10 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void slot_connected();
+
 private:
     Ui::loginDialog *ui;
+    socketConnect *sc;
 };
 #endif // LOGINDIALOG_H
