@@ -1,18 +1,16 @@
 #include "makesocket.h"
-#include <stdio.h>
+#define BUFSIZ 4096
 int main(int ac,char*av[])
 {
     int sock,fd;
-    FILE* fpin;
     char request[BUFSIZ];
     makesocket m;
     sock=m.createsocket(8888);
     fd=accept(sock,NULL,NULL);
-    fpin=fdopen(fd,"r");
+    int num;
     while(1)
     {
-        fgets(request,BUFSIZ,fpin);
-        printf("got a call:request=%s\n",request);
+        num=read(fd,request,BUFSIZ);
+        write(1,request,num);
     }
-    fclose(fpin);
 }
