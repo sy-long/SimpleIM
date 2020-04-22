@@ -7,12 +7,12 @@ int main(int ac,char*av[])
     char request[BUFSIZ];
     makesocket m;
     sock=m.createsocket(8888);
+    fd=accept(sock,NULL,NULL);
+    fpin=fdopen(fd,"r");
     while(1)
     {
-        fd=accept(sock,NULL,NULL);
-        fpin=fdopen(fd,"r");
         fgets(request,BUFSIZ,fpin);
         printf("got a call:request=%s\n",request);
-        fclose(fpin);
     }
+    fclose(fpin);
 }
