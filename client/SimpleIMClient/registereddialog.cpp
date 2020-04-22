@@ -21,6 +21,7 @@ void registeredDialog::on_pushButton_clicked()
         QString sendMessage = ui->lineEdit->text();
         if(!sendMessage.isEmpty())
         {
+            sendMessage+='\n';
             sc->TCP_sendMesSocket->write(sendMessage.toUtf8());
         }
         else
