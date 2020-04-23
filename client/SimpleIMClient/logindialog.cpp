@@ -7,6 +7,7 @@ loginDialog::loginDialog(socketConnect *tsc,QWidget *parent)
     , sc(tsc)
 {
     ui->setupUi(this);
+    this->setWindowTitle("登陆");
     sc->isconnetion=false;
     sc->TCP_sendMesSocket=new QTcpSocket();
     sc->TCP_sendMesSocket->abort();

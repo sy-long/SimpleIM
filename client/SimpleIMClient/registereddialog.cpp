@@ -7,6 +7,7 @@ registeredDialog::registeredDialog(socketConnect *tsc,QWidget *parent) :
     sc(tsc)
 {
     ui->setupUi(this);
+    this->setWindowTitle("注册");
 }
 
 registeredDialog::~registeredDialog()
@@ -27,14 +28,18 @@ void registeredDialog::on_pushButton_clicked()
         {
             if(!(sendMessage1!=sendMessage2))
             {
-                sendMessage+='\n';
-                sc->TCP_sendMesSocket->write(sendMessage.toUtf8());
-                sendMessage1+='\n';
-                sc->TCP_sendMesSocket->write(sendMessage.toUtf8());
-                sendMessage2+='\n';
-                sc->TCP_sendMesSocket->write(sendMessage.toUtf8());
-                sendMessage3+='\n';
-                sc->TCP_sendMesSocket->write(sendMessage.toUtf8());
+
+                QString sendMessagexml;
+                sendMessagexml+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>set</type> \
+                    <do>registered</do> \
+                    <uid>"+sendMessage+"</uid> \
+                    <upwd>"+sendMessage1+"</upwd> \
+                    <uname>"+sendMessage3+"</upwd> \
+                    </iq>";
+                 sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
             }
             else
                 QMessageBox::warning(this,"错误","两次密码不一致!",QMessageBox::Ok);

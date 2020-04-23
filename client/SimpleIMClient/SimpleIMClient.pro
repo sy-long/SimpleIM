@@ -17,12 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../../public/XMLtool.cpp \
     main.cpp \
     logindialog.cpp \
     registereddialog.cpp \
     socketconnect.cpp
 
 HEADERS += \
+    ../../public/XMLtool.h \
     login.h \
     registereddialog.h \
     socketconnect.h
