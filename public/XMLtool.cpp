@@ -68,6 +68,7 @@ XMLParse::xml_t* XMLParse::lableparse()
             tnode=lableparse();
             if(tnode!=NULL)
                 node->child.push_back(tnode);
+            parsewhitespace();
             ctest=++tdata;
             tdata--;
         }
