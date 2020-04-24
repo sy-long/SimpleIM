@@ -3,13 +3,13 @@
 
 #include "../public/XMLtool.h"
 #include "operation.h"
-
+#include <unistd.h>
 class XMLManage
 {
     private:
         operation oper;
     public:
-        void dataDispose(char *);
+        void dataDispose(char *,int *);
 };
 
 #endif

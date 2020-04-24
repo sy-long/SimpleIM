@@ -18,7 +18,7 @@ void * handle_call(void * fdptr)
         num=read(fd,request,BUFSIZ);
         if(num==-1)
             break;
-        labelmanage.dataDispose(request);
+        labelmanage.dataDispose(request,(int *)fdptr);
     }
 }
 int main(int ac,char*av[])
