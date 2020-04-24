@@ -19,7 +19,7 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-
+    void slot_recvmessage();
 private:
     Ui::registeredDialog *ui;
     socketConnect *sc;

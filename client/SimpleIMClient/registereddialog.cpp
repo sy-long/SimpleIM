@@ -1,5 +1,6 @@
 #include "registereddialog.h"
 #include "ui_registereddialog.h"
+#include "../../public/XMLtool.h"
 
 registeredDialog::registeredDialog(socketConnect *tsc,QWidget *parent) :
     QDialog(parent),
@@ -8,6 +9,7 @@ registeredDialog::registeredDialog(socketConnect *tsc,QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("注册");
+    connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
 }
 
 registeredDialog::~registeredDialog()
@@ -15,6 +17,16 @@ registeredDialog::~registeredDialog()
     delete ui;
 }
 
+void registeredDialog::slot_recvmessage()
+{
+    QByteArray array;
+    array=sc->TCP_sendMesSocket->readAll();
+    XMLParse readparse;
+    XMLParse::xml_t *xmltp;
+    readparse.parse(array.data());
+    xmltp=readparse.get();
+    QMessageBox::warning(this,"结果",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+}
 void registeredDialog::on_pushButton_clicked()
 {
     if(sc->isconnetion)
