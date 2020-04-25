@@ -49,4 +49,51 @@
             }
         }
     }
+    if(xmltp->LabelName=="presence")
+    {
+        if(xmltp->child[0]->LabelValue=="login")
+        {
+            ret=oper.login(xmltp);
+            if(ret==-1)
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <iq> \
+                <type>result</type> \
+                <item>登陆失败，数据库错误</item> \
+                </iq>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else if(ret==-2)
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <iq> \
+                <type>result</type> \
+                <item>注册失败，没有此账号</item> \
+                </iq>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else if(ret==-3)
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <iq> \
+                <type>result</type> \
+                <item>注册失败，密码错误</item> \
+                </iq>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <iq> \
+                <type>result</type> \
+                <item>登陆成功</item> \
+                </iq>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+        }
+    }
  }

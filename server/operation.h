@@ -5,6 +5,7 @@
 class operation{
     public:
         int registered(XMLParse::xml_t *);
+        int login(XMLParse::xml_t *);
 };
 
 #endif
