@@ -18,19 +18,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ../../public/XMLtool.cpp \
+    chatdialog.cpp \
     main.cpp \
     logindialog.cpp \
+    maindialog.cpp \
     registereddialog.cpp \
     socketconnect.cpp
 
 HEADERS += \
     ../../public/XMLtool.h \
+    chatdialog.h \
     login.h \
+    maindialog.h \
     registereddialog.h \
     socketconnect.h
 
 FORMS += \
+    chatdialog.ui \
     logindialog.ui \
+    maindialog.ui \
     registereddialog.ui
 
 # Default rules for deployment.

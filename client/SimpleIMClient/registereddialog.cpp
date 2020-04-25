@@ -26,6 +26,7 @@ void registeredDialog::slot_recvmessage()
     readparse.parse(array.data());
     xmltp=readparse.get();
     QMessageBox::warning(this,"结果",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+    close();
 }
 void registeredDialog::on_pushButton_clicked()
 {
@@ -49,7 +50,7 @@ void registeredDialog::on_pushButton_clicked()
                     <do>registered</do> \
                     <uid>"+sendMessage+"</uid> \
                     <upwd>"+sendMessage1+"</upwd> \
-                    <uname>"+sendMessage3+"</upwd> \
+                    <uname>"+sendMessage3+"</uname> \
                     </iq>";
                  sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
             }

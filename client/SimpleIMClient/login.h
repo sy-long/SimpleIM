@@ -23,6 +23,8 @@ private slots:
 
     void slot_connected();
 
+    void slot_recvmessage();
+
 private:
     Ui::loginDialog *ui;
     socketConnect *sc;
