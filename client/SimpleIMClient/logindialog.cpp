@@ -36,7 +36,7 @@ void loginDialog::slot_recvmessage()
     {
         this->close();
         disconnect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
-        MainDialog maindialog(sc,this);
+        MainDialog maindialog(ui->lineEdit->text(),sc,this);
         maindialog.exec();
         connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
     }
