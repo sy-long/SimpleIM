@@ -39,8 +39,19 @@ int operation::registered(XMLParse::xml_t *xmltp)
     }
     else
     {
-        mysql.closeconn();
-        return 0;
+        sprintf(sql,"insert into online(id,state) values ('%s','%d')",xmltp->child[2]->LabelValue.c_str()
+        ,0);
+        res=mysql_query(&conn,sql);
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            mysql.closeconn();
+            return 0;
+        }
     }
 }
 int operation::login(XMLParse::xml_t *xmltp)
@@ -75,8 +86,18 @@ int operation::login(XMLParse::xml_t *xmltp)
                 result_row=mysql_fetch_row(res_ptr);
                 if(!strcmp(result_row[2],xmltp->child[2]->LabelValue.c_str()))
                 {
-                    mysql.closeconn();
-                    return 0;
+                    sprintf(sql,"update online set state = replace(state,0,1) where id like '%s'",xmltp->child[1]->LabelValue.c_str());
+                    res=mysql_query(&conn,sql);
+                    if(res)
+                    {
+                        mysql.closeconn();
+                        return -1;
+                    }
+                    else
+                    {                    
+                        mysql.closeconn();
+                        return 0;
+                    }
                 }
                 else
                 {
@@ -86,5 +107,27 @@ int operation::login(XMLParse::xml_t *xmltp)
             }
             
         }   
+    }
+}
+int operation::logout(XMLParse::xml_t *xmltp)
+{
+    database mysql;
+    MYSQL conn=*(mysql.getconn());
+    int res;
+    char sql[100];
+    MYSQL_RES *res_ptr;
+    int row;
+    MYSQL_ROW result_row;
+    sprintf(sql,"update online set state = replace(state,1,0) where id like '%s'",xmltp->child[1]->LabelValue.c_str());
+    res=mysql_query(&conn,sql);
+    if(res)
+    {
+        mysql.closeconn();
+        return -1;
+    }
+    else
+    {
+        mysql.closeconn();
+        return 0;
     }
 }

@@ -1,5 +1,6 @@
 #include "XMLManage.h"
 #include <string>
+#include <iostream>
  void XMLManage::dataDispose(char *data,int *fdptr)
  {
     XMLParse readparse;
@@ -94,6 +95,10 @@
                 </iq>";
                 write(fd,sendbuf.c_str(),sendbuf.size());
             }
+        }
+        else if(xmltp->child[0]->LabelValue=="logout")
+        {
+            ret=oper.logout(xmltp);
         }
     }
  }
