@@ -13,6 +13,20 @@ MainDialog::MainDialog(QString Nowid,socketConnect *tsc,QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("SimpleIM");
     connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
+    initfriendlist();
+}
+
+void MainDialog::initfriendlist()
+{
+            QString sendMessagexml;
+            sendMessagexml+=
+                "<?xml version=\"1.0\"?> \
+                <iq> \
+                <type>get</type> \
+                <do>friendslist</do> \
+                <uid>"+id+"</uid> \
+                </iq>";
+             sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
 }
 
 MainDialog::~MainDialog()
