@@ -1,12 +1,22 @@
 #include "XMLManage.h"
 #include <string>
 #include <iostream>
- void XMLManage::dataDispose(char *data,int *fdptr)
- {
+
+void XMLManage::setdata(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
+{
+    dataDispose(xmltp,fdptr,loop);
+}
+void XMLManage::setdata(char *data,int *fdptr,eventloop *loop)
+{
     XMLParse readparse;
     XMLParse::xml_t *xmltp;
     readparse.parse(data);
     xmltp=readparse.get();
+    dataDispose(xmltp,fdptr,loop);
+}
+void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
+ {
+    
     int ret;
     int fd=*(fdptr);
     string sendbuf;
@@ -48,13 +58,89 @@
                     write(fd,sendbuf.c_str(),sendbuf.size());
                 }
             }
+            else if(xmltp->child[1]->LabelValue=="addfriends")
+            {
+                ret=oper.addfriend(xmltp,loop);
+                if(ret==-1)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>添加失败，数据库错误</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==-2)
+                {
+                    
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>添加失败，没有该用户</item> \
+                    </iq>";
+                    
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==-3)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>添加失败，该用户不在线</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==0)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>添加成功,等待对方同意</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==1)
+                {
+                    cout<<"ok"<<endl;
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>set</type> \
+                    <item>好友添加请求</item> \
+                    <from>"+xmltp->child[3]->LabelValue+"</from> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==2)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>set</type> \
+                    <item>添加成功</item> \
+                    <from>"+xmltp->child[3]->LabelValue+"</from> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+            }
+        }
+        if(xmltp->child[0]->LabelValue=="get")
+        {
+            if(xmltp->child[1]->LabelValue=="friendslist")
+            {
+                
+            }
         }
     }
     if(xmltp->LabelName=="presence")
     {
         if(xmltp->child[0]->LabelValue=="login")
         {
-            ret=oper.login(xmltp);
+            ret=oper.login(xmltp,loop,fd);
             if(ret==-1)
             {
                 sendbuf+=
@@ -96,9 +182,11 @@
                 write(fd,sendbuf.c_str(),sendbuf.size());
             }
         }
-        else if(xmltp->child[0]->LabelValue=="logout")
-        {
-            ret=oper.logout(xmltp);
-        }
     }
+ }
+
+ void XMLManage::logout(int *fdptr)
+ {
+     int fd=*(fdptr);
+     oper.logout(fd);
  }
