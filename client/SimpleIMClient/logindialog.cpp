@@ -2,6 +2,7 @@
 #include "ui_logindialog.h"
 #include "../../public/XMLtool.h"
 #include "maindialog.h"
+#include <windows.h>
 loginDialog::loginDialog(socketConnect *tsc,QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::loginDialog)
@@ -36,9 +37,8 @@ void loginDialog::slot_recvmessage()
     {
         this->close();
         disconnect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
-        MainDialog maindialog(ui->lineEdit->text(),sc,this);
-        maindialog.exec();
-        connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
+        MainDialog *maindialog=new MainDialog(ui->lineEdit->text(),sc,this);
+        maindialog->show();
     }
 }
 

@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ../../public/XMLtool.cpp \
+    addfriendsdialog.cpp \
     chatdialog.cpp \
     main.cpp \
     logindialog.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 
 HEADERS += \
     ../../public/XMLtool.h \
+    addfriendsdialog.h \
     chatdialog.h \
     login.h \
     maindialog.h \
@@ -34,6 +36,7 @@ HEADERS += \
     socketconnect.h
 
 FORMS += \
+    addfriendsdialog.ui \
     chatdialog.ui \
     logindialog.ui \
     maindialog.ui \
