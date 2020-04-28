@@ -20,6 +20,7 @@ SOURCES += \
     ../../public/XMLtool.cpp \
     addfriendsdialog.cpp \
     chatdialog.cpp \
+    chathellodialog.cpp \
     main.cpp \
     logindialog.cpp \
     maindialog.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     ../../public/XMLtool.h \
     addfriendsdialog.h \
     chatdialog.h \
+    chathellodialog.h \
     login.h \
     maindialog.h \
     registereddialog.h \
@@ -38,6 +40,7 @@ HEADERS += \
 FORMS += \
     addfriendsdialog.ui \
     chatdialog.ui \
+    chathellodialog.ui \
     logindialog.ui \
     maindialog.ui \
     registereddialog.ui

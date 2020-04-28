@@ -20,6 +20,9 @@ public:
 private slots:
     void on_pushButton_clicked();
     void slot_recvmessage();
+    void on_listWidget_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::MainDialog *ui;
@@ -27,6 +30,7 @@ private:
     QString id;
 private:
     void closeEvent(QCloseEvent *e);
+    void initfriendlist();
 };
 
 #endif // MAINDIALOG_H
