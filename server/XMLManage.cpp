@@ -1,6 +1,7 @@
 #include "XMLManage.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 void XMLManage::setdata(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
 {
@@ -105,7 +106,6 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                 }
                 else if(ret==1)
                 {
-                    cout<<"ok"<<endl;
                     sendbuf+=
                     "<?xml version=\"1.0\"?> \
                     <iq> \
@@ -132,7 +132,32 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
         {
             if(xmltp->child[1]->LabelValue=="friendslist")
             {
-                
+                vector<string> list;
+                ret=oper.getfriendlist(xmltp,&list);
+                if(ret==-1)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>拉取好友列表失败，数据库错误</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==0)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>拉取成功</item>     ";
+                    for(int i=0;i<list.size();i++)
+                    {
+                        sendbuf+="<item>"+list[i]+"</item>     ";
+                    }
+                    sendbuf+="</iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
             }
         }
     }
@@ -179,6 +204,59 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                 <type>result</type> \
                 <item>登陆成功</item> \
                 </iq>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+        }
+    }
+    if(xmltp->LabelName=="message")
+    {
+        if(xmltp->child[0]->LabelValue=="personal")
+        {
+            cout<<"manage"<<endl;
+            ret=oper.communication(xmltp,loop);
+            if(ret==-1)
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <message> \
+                <type>result</type> \
+                <item>发送失败，数据库错误</item> \
+                </message>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else if(ret==-2)
+            {
+                
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <message> \
+                <type>result</type> \
+                <item>发送失败，没有该用户</item> \
+                </message>";
+                
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else if(ret==-3)
+            {
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <message> \
+                <type>result</type> \
+                <item>发送失败，该用户不在线</item> \
+                </message>";
+                write(fd,sendbuf.c_str(),sendbuf.size());
+            }
+            else if(ret==1)
+            {
+                cout<<"message get"<<endl;
+                sendbuf+=
+                "<?xml version=\"1.0\"?> \
+                <message> \
+                <type>getm</type> \
+                <from>"+xmltp->child[2]->LabelValue+"</from> \
+                <to>"+xmltp->child[3]->LabelValue+"</to> \
+                <text>"+xmltp->child[4]->LabelValue+"</text> \
+                </message>";
                 write(fd,sendbuf.c_str(),sendbuf.size());
             }
         }

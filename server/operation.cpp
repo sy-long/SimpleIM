@@ -285,3 +285,125 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
         return 2;
     }
 }
+
+int operation::getfriendlist(XMLParse::xml_t *xmltp,vector<string> *list)
+{
+    database mysql;
+    MYSQL conn=*(mysql.getconn());
+    int res;
+    char sql[100];
+    MYSQL_RES *res_ptr;
+    int row;
+    MYSQL_ROW result_row;
+    sprintf(sql,"select * from friends where id1='%s'",xmltp->child[2]->LabelValue.c_str());
+    res=mysql_query(&conn,sql);
+    cout<<"1"<<endl;
+    if(res)
+    {
+        mysql.closeconn();
+        return -1;
+    }
+    else
+    {
+        res_ptr = mysql_store_result(&conn);
+        if(res_ptr)
+        {
+            row = mysql_num_rows(res_ptr);
+            if(row!=0)
+            {
+                result_row=mysql_fetch_row(res_ptr);
+                while(result_row!=NULL)
+                {
+                    list->push_back(result_row[1]);
+                    result_row=mysql_fetch_row(res_ptr);
+                }
+            }
+        }
+        sprintf(sql,"select * from friends where id2='%s'",xmltp->child[2]->LabelValue.c_str());
+        res=mysql_query(&conn,sql);
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            res_ptr = mysql_store_result(&conn);
+            if(res_ptr)
+            {
+                row = mysql_num_rows(res_ptr);
+                if(row!=0)
+                {
+                    result_row=mysql_fetch_row(res_ptr);
+                    while(result_row!=NULL)
+                    {
+                        list->push_back(result_row[0]);
+                        result_row=mysql_fetch_row(res_ptr);
+                    }
+                }
+            }
+            mysql.closeconn();
+            return 0;
+        }
+    }
+}
+
+int operation::communication(XMLParse::xml_t *xmltp,eventloop *loop)
+{
+    database mysql;
+    MYSQL conn=*(mysql.getconn());
+    int res;
+    char sql[100];
+    MYSQL_RES *res_ptr;
+    int row;
+    MYSQL_ROW result_row;
+    if(xmltp->child[1]->LabelValue=="sendm")
+    {
+        cout<<"deal"<<endl;
+        sprintf(sql,"select * from online where id='%s'",xmltp->child[3]->LabelValue.c_str());
+        res=mysql_query(&conn,sql);
+        cout<<xmltp->child[1]->LabelValue<<endl;
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            res_ptr = mysql_store_result(&conn);
+            if(res_ptr)
+            {
+                row = mysql_num_rows(res_ptr);
+                if(row==0)
+                {
+                    mysql.closeconn();
+                    return -2;
+                }
+                else
+                {
+                    result_row=mysql_fetch_row(res_ptr);
+                    if(!strcmp(result_row[1],"1"))
+                    {
+                        cout<<"to kill"<<endl;
+                        xmltp->child[1]->LabelValue="getm";
+                        loop->sendarr(*xmltp,atol(result_row[2]),atoi(result_row[3]));
+                        pthread_kill(atol(result_row[2]),SIGUSR1);
+                        mysql.closeconn();
+                        return 0;
+                    }
+                    else
+                    {
+                        mysql.closeconn();
+                        return -3;
+                    }
+                }
+            }
+        }
+    }
+    else if(xmltp->child[1]->LabelValue=="getm")
+    {
+        cout<<"getm"<<endl;
+        mysql.closeconn();
+        return 1;
+    }
+}

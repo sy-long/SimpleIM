@@ -3,6 +3,7 @@
 #include "../public/XMLtool.h"
 #include "Database.h"
 #include "Eventloop.h"
+#include <vector>
 class operation{
     private:
         string id;
@@ -13,7 +14,8 @@ class operation{
         int login(XMLParse::xml_t *,eventloop *,int);
         int logout(int);
         int addfriend(XMLParse::xml_t *,eventloop *);
-        int getfriendlist(XMLParse::xml_t *);
+        int getfriendlist(XMLParse::xml_t *,vector<string> *);
+        int communication(XMLParse::xml_t *,eventloop *);
 };
 
 #endif
