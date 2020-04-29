@@ -90,7 +90,7 @@ int operation::login(XMLParse::xml_t *xmltp,eventloop *loop,int fd)
             else
             {
                 result_row=mysql_fetch_row(res_ptr);
-                if(!strcmp(result_row[2],xmltp->child[2]->LabelValue.c_str()))
+                if(!strcmp(result_row[1],xmltp->child[2]->LabelValue.c_str()))
                 {
                     sprintf(sql,"update online set state = replace(state,0,1) where id like '%s'",xmltp->child[1]->LabelValue.c_str());
                     res=mysql_query(&conn,sql);
@@ -183,6 +183,7 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
     MYSQL_RES *res_ptr;
     int row;
     MYSQL_ROW result_row;
+    MYSQL_ROW result_row1;
     if(xmltp->child[2]->LabelValue=="untreated")
     {
         sprintf(sql,"select * from online where id='%s'",xmltp->child[4]->LabelValue.c_str());
@@ -208,7 +209,24 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
                     result_row=mysql_fetch_row(res_ptr);
                     if(!strcmp(result_row[1],"1"))
                     {
+                        sprintf(sql,"select * from userbasicinfo where id='%s'",xmltp->child[3]->LabelValue.c_str());
+                        res=mysql_query(&conn,sql);
+                        if(res)
+                        {
+                            mysql.closeconn();
+                            return -1;
+                        }
+                        else
+                        {
+                            res_ptr = mysql_store_result(&conn);
+                            if(res_ptr)
+                            {
+                                result_row1=mysql_fetch_row(res_ptr);
+                            }
+                        }
                         xmltp->child[2]->LabelValue="processed";
+                        xmltp->child[4]->LabelValue=result_row1[2];
+                        xmltp->child[4]->LabelName="fromname";
                         loop->sendarr(*xmltp,atol(result_row[2]),atoi(result_row[3]));
                         pthread_kill(atol(result_row[2]),SIGUSR1);
                         mysql.closeconn();
@@ -231,8 +249,25 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
     }
     else if(xmltp->child[2]->LabelValue=="accept")
     {
-        sprintf(sql,"insert into friends(id1,id2) values ('%s','%s')",xmltp->child[3]->LabelValue.c_str()
-        ,xmltp->child[4]->LabelValue.c_str());
+        string fromname;
+        sprintf(sql,"select * from userbasicinfo where id='%s'",xmltp->child[3]->LabelValue.c_str());
+        res=mysql_query(&conn,sql);
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            res_ptr = mysql_store_result(&conn);
+            if(res_ptr)
+            {
+                result_row=mysql_fetch_row(res_ptr);
+                fromname=result_row[2];
+            }
+        }
+        sprintf(sql,"insert into friends(id1,id2,id1name,id2name) values ('%s','%s','%s','%s')",xmltp->child[3]->LabelValue.c_str()
+        ,xmltp->child[4]->LabelValue.c_str(),fromname.c_str(),xmltp->child[5]->LabelValue.c_str());
         res=mysql_query(&conn,sql);
         if(res)
         {
@@ -265,6 +300,8 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
                         if(!strcmp(result_row[1],"1"))
                         {
                             xmltp->child[2]->LabelValue="accepted";
+                            xmltp->child[5]->LabelValue=fromname.c_str();
+                            xmltp->child[5]->LabelName="fromname";
                             loop->sendarr(*xmltp,atol(result_row[2]),atoi(result_row[3]));
                             pthread_kill(atol(result_row[2]),SIGUSR1);
                             mysql.closeconn();
@@ -286,18 +323,17 @@ int operation::addfriend(XMLParse::xml_t *xmltp,eventloop *loop)
     }
 }
 
-int operation::getfriendlist(XMLParse::xml_t *xmltp,vector<string> *list)
+int operation::getfriendlist(XMLParse::xml_t *xmltp,vector<operation::friendlistinfo> *list)
 {
     database mysql;
     MYSQL conn=*(mysql.getconn());
-    int res;
-    char sql[100];
     MYSQL_RES *res_ptr;
-    int row;
     MYSQL_ROW result_row;
+    int res;
+    int row;
+    char sql[100];
     sprintf(sql,"select * from friends where id1='%s'",xmltp->child[2]->LabelValue.c_str());
     res=mysql_query(&conn,sql);
-    cout<<"1"<<endl;
     if(res)
     {
         mysql.closeconn();
@@ -312,9 +348,12 @@ int operation::getfriendlist(XMLParse::xml_t *xmltp,vector<string> *list)
             if(row!=0)
             {
                 result_row=mysql_fetch_row(res_ptr);
+                friendlistinfo tlistinfo;
                 while(result_row!=NULL)
                 {
-                    list->push_back(result_row[1]);
+                    tlistinfo.uid=result_row[1];
+                    tlistinfo.name=result_row[3];
+                    list->push_back(tlistinfo);
                     result_row=mysql_fetch_row(res_ptr);
                 }
             }
@@ -335,9 +374,12 @@ int operation::getfriendlist(XMLParse::xml_t *xmltp,vector<string> *list)
                 if(row!=0)
                 {
                     result_row=mysql_fetch_row(res_ptr);
+                    friendlistinfo tlistinfo;
                     while(result_row!=NULL)
                     {
-                        list->push_back(result_row[0]);
+                        tlistinfo.uid=result_row[0];
+                        tlistinfo.name=result_row[2];
+                        list->push_back(tlistinfo);
                         result_row=mysql_fetch_row(res_ptr);
                     }
                 }

@@ -112,6 +112,7 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                     <type>set</type> \
                     <item>好友添加请求</item> \
                     <from>"+xmltp->child[3]->LabelValue+"</from> \
+                    <fromname>"+xmltp->child[4]->LabelValue+"</fromname> \
                     </iq>";
                     write(fd,sendbuf.c_str(),sendbuf.size());
                 }
@@ -123,6 +124,7 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                     <type>set</type> \
                     <item>添加成功</item> \
                     <from>"+xmltp->child[3]->LabelValue+"</from> \
+                    <fromname>"+xmltp->child[5]->LabelValue+"</fromname> \
                     </iq>";
                     write(fd,sendbuf.c_str(),sendbuf.size());
                 }
@@ -132,7 +134,7 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
         {
             if(xmltp->child[1]->LabelValue=="friendslist")
             {
-                vector<string> list;
+                vector<operation::friendlistinfo> list;
                 ret=oper.getfriendlist(xmltp,&list);
                 if(ret==-1)
                 {
@@ -153,7 +155,8 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                     <item>拉取成功</item>     ";
                     for(int i=0;i<list.size();i++)
                     {
-                        sendbuf+="<item>"+list[i]+"</item>     ";
+                        sendbuf+="<item>"+list[i].uid+"</item>     ";
+                        sendbuf+="<item>"+list[i].name+"</item>     ";
                     }
                     sendbuf+="</iq>";
                     write(fd,sendbuf.c_str(),sendbuf.size());
@@ -182,7 +185,7 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                 "<?xml version=\"1.0\"?> \
                 <iq> \
                 <type>result</type> \
-                <item>注册失败，没有此账号</item> \
+                <item>登陆失败，没有此账号</item> \
                 </iq>";
                 write(fd,sendbuf.c_str(),sendbuf.size());
             }
@@ -192,7 +195,7 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                 "<?xml version=\"1.0\"?> \
                 <iq> \
                 <type>result</type> \
-                <item>注册失败，密码错误</item> \
+                <item>登陆失败，密码错误</item> \
                 </iq>";
                 write(fd,sendbuf.c_str(),sendbuf.size());
             }

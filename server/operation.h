@@ -9,12 +9,18 @@ class operation{
         string id;
         int state;
     public:
+        struct friendlistinfo
+        {
+            string uid;
+            string name;
+        };
+    public:
         operation();
         int registered(XMLParse::xml_t *);
         int login(XMLParse::xml_t *,eventloop *,int);
         int logout(int);
         int addfriend(XMLParse::xml_t *,eventloop *);
-        int getfriendlist(XMLParse::xml_t *,vector<string> *);
+        int getfriendlist(XMLParse::xml_t *,vector<friendlistinfo> *);
         int communication(XMLParse::xml_t *,eventloop *);
 };
 
