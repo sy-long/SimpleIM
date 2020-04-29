@@ -24,7 +24,7 @@ private:
 
 public:
     void sent_message(QString uid);
-    void get_message(QString uid,QString text);
+    void get_message(QString uname,QString text);
 };
 
 #endif // CHATDIALOG_H

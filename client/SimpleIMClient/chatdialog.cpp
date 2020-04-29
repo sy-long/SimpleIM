@@ -35,8 +35,8 @@ void chatDialog::sent_message(QString uid)
      sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
 }
 
-void chatDialog::get_message(QString uid,QString text)
+void chatDialog::get_message(QString uname,QString text)
 {
-    QString local_text=uid+":"+text;
+    QString local_text=uname+":"+text;
     ui->textEdit->append(local_text);
 }

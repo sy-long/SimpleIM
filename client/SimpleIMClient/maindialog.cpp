@@ -13,6 +13,7 @@ struct Contact_window_info
     int listitemindex;
     int stackitemindex;
     string uid;
+    string uname;
 };
 vector<Contact_window_info> contact_table;
 MainDialog::MainDialog(QString Nowid,socketConnect *tsc,QWidget *parent) :
@@ -32,7 +33,7 @@ MainDialog::MainDialog(QString Nowid,socketConnect *tsc,QWidget *parent) :
 
 void MainDialog::on_listWidget_clicked()
 {
-    qDebug()<<"yes"<<endl;
+    static int count=0;
     int row=ui->listWidget->currentRow();
     Contact_window_info tinfo;
     for(int i=0;i<contact_table.size();i++)
@@ -43,9 +44,16 @@ void MainDialog::on_listWidget_clicked()
             break;
         }
     }
+    static int lastindex;
+    if(count!=0)
+    {
+        ui->listWidget->item(lastindex)->setBackgroundColor("white");
+    }
+    lastindex=ui->listWidget->currentRow();
     ui->stackedWidget->setCurrentIndex(tinfo.stackitemindex);
-    ui->label_2->setText(tinfo.uid.c_str());
+    ui->label_2->setText(tinfo.uname.c_str());
     ui->listWidget->currentItem()->setBackgroundColor("gray");
+    count++;
 }
 
 void MainDialog::initfriendlist()
@@ -81,7 +89,7 @@ void MainDialog::slot_recvmessage()
         {
             if(xmltp->child[1]->LabelValue=="好友添加请求")
             {
-                QString info=xmltp->child[2]->LabelValue.c_str();
+                QString info=xmltp->child[3]->LabelValue.c_str();
                 info+="用户想添加您为好友，是否添加？";
                 int ret;
                 ret=QMessageBox::warning(this,"好友请求",info,QMessageBox::Ok,QMessageBox::No);
@@ -96,13 +104,38 @@ void MainDialog::slot_recvmessage()
                         <state>accept</state> \
                         <from>"+id+"</from> \
                         <to>"+xmltp->child[2]->LabelValue.c_str()+"</to> \
+                        <toname>"+xmltp->child[3]->LabelValue.c_str()+"</toname> \
                         </iq>";
                      sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
+                     Contact_window_info tinfo;
+                     int nowlistitemnum=ui->listWidget->count();
+                     ui->listWidget->insertItem(nowlistitemnum,xmltp->child[3]->LabelValue.c_str());
+                     chatDialog *ptr;
+                     ptr=new chatDialog(id,sc);
+                     int nowstackwitemnum=ui->stackedWidget->count();
+                     ui->stackedWidget->addWidget(ptr);
+                     tinfo.listitemindex=nowlistitemnum;
+                     tinfo.stackitemindex=nowstackwitemnum;
+                     tinfo.uid=xmltp->child[2]->LabelValue;
+                     tinfo.uname=xmltp->child[3]->LabelValue;
+                     contact_table.push_back(tinfo);
                 }
             }
             if(xmltp->child[1]->LabelValue=="添加成功")
             {
-                QMessageBox::warning(this,"好友请求",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+                QMessageBox::warning(this,"通知",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+                Contact_window_info tinfo;
+                int nowlistitemnum=ui->listWidget->count();
+                ui->listWidget->insertItem(nowlistitemnum,xmltp->child[3]->LabelValue.c_str());
+                chatDialog *ptr;
+                ptr=new chatDialog(id,sc);
+                int nowstackwitemnum=ui->stackedWidget->count();
+                ui->stackedWidget->addWidget(ptr);
+                tinfo.listitemindex=nowlistitemnum;
+                tinfo.stackitemindex=nowstackwitemnum;
+                tinfo.uid=xmltp->child[2]->LabelValue;
+                tinfo.uname=xmltp->child[3]->LabelValue;
+                contact_table.push_back(tinfo);
             }
         }
         if(xmltp->child[0]->LabelValue=="result")
@@ -114,16 +147,19 @@ void MainDialog::slot_recvmessage()
             if(xmltp->child[1]->LabelValue=="拉取成功")
             {
                 chatDialog *ptr;
-                for(int i=2;i<xmltp->child.size();i++)
+                int index=2;
+                for(int i=2;i<xmltp->child.size();i+=2)
                 {
                     Contact_window_info tinfo;
-                    ui->listWidget->insertItem(i-2,xmltp->child[i]->LabelValue.c_str());
+                    ui->listWidget->insertItem(index-2,xmltp->child[i+1]->LabelValue.c_str());
                     ptr=new chatDialog(id,sc);
                     ui->stackedWidget->addWidget(ptr);
-                    tinfo.listitemindex=i-2;
-                    tinfo.stackitemindex=i+1;
+                    tinfo.listitemindex=index-2;
+                    tinfo.stackitemindex=index+1;
                     tinfo.uid=xmltp->child[i]->LabelValue;
+                    tinfo.uname=xmltp->child[i+1]->LabelValue;
                     contact_table.push_back(tinfo);
+                    index++;
                 }
             }
         }
@@ -148,7 +184,7 @@ void MainDialog::slot_recvmessage()
             }
             chatDialog *NowPage;
             NowPage=(chatDialog *)ui->stackedWidget->widget(tinfo.stackitemindex);
-            NowPage->get_message(QString::fromStdString(xmltp->child[1]->LabelValue),QString::fromStdString(xmltp->child[3]->LabelValue));
+            NowPage->get_message(QString::fromStdString(tinfo.uname),QString::fromStdString(xmltp->child[3]->LabelValue));
             int nowlistindex=ui->listWidget->currentRow();
             if(nowlistindex!=tinfo.listitemindex)
             {
