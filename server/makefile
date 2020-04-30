@@ -1,2 +1,2 @@
 a.out:makesocket.cpp ../public/XMLtool.cpp main.cpp
-	g++ -o a.out ../public/XMLtool.cpp Eventloop.cpp makesocket.cpp Database.cpp operation.cpp XMLManage.cpp  main.cpp `mysql_config --cflags --libs` -lpthread
+	g++ -o a.out ../public/aes.cpp ../public/XMLtool.cpp Eventloop.cpp makesocket.cpp Database.cpp operation.cpp XMLManage.cpp  main.cpp `mysql_config --cflags --libs` -lpthread
