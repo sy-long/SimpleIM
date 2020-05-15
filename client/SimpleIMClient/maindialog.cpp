@@ -76,7 +76,6 @@ MainDialog::~MainDialog()
 
 void MainDialog::slot_recvmessage()
 {
-    qDebug()<<"ok"<<endl;
     QByteArray array;
     array=sc->TCP_sendMesSocket->readAll();
     XMLParse readparse;
@@ -136,6 +135,28 @@ void MainDialog::slot_recvmessage()
                 tinfo.uid=xmltp->child[2]->LabelValue;
                 tinfo.uname=xmltp->child[3]->LabelValue;
                 contact_table.push_back(tinfo);
+            }
+            if(xmltp->child[1]->LabelValue=="删除成功!")
+            {
+                QMessageBox::warning(this,"通知",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+                int index=ui->listWidget->currentRow();
+                ui->listWidget->takeItem(index);
+            }
+            if(xmltp->child[1]->LabelValue=="好友删除通知")
+            {
+                QMessageBox::warning(this,"通知",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
+                int index;
+                Contact_window_info tinfo;
+                for(int i=0;i<contact_table.size();i++)
+                {
+                    if(xmltp->child[2]->LabelValue==contact_table[i].uid)
+                    {
+                        tinfo=contact_table[i];
+                        break;
+                    }
+                }
+                index=tinfo.listitemindex;
+                ui->listWidget->takeItem(index);
             }
         }
         if(xmltp->child[0]->LabelValue=="result")
@@ -227,4 +248,32 @@ void MainDialog::on_pushButton_2_clicked()
         }
     }
     NowPage->sent_message(QString::fromStdString(tinfo.uid));
+}
+
+void MainDialog::on_pushButton_3_clicked()
+{
+    if(sc->isconnetion)
+    {
+        int index=ui->listWidget->currentRow();
+        Contact_window_info tinfo;
+        for(int i=0;i<contact_table.size();i++)
+        {
+            if(index==contact_table[i].listitemindex)
+            {
+                tinfo=contact_table[i];
+                break;
+            }
+        }
+        QString sendMessagexml;
+        sendMessagexml+=
+            "<?xml version=\"1.0\"?> \
+            <iq> \
+            <type>set</type> \
+            <do>delfriends</do> \
+            <state>untreated</state> \
+            <from>"+id+"</from> \
+            <to>"+QString::fromStdString(tinfo.uid)+"</to> \
+            </iq>";
+         sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
+    }
 }

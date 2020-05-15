@@ -32,7 +32,6 @@ void AddfriendsDialog::slot_recvmessage()
 
 void AddfriendsDialog::on_pushButton_clicked()
 {
-    qDebug()<<"ok"<<endl;
     if(sc->isconnetion)
     {
         QString sendMessage = ui->lineEdit->text();

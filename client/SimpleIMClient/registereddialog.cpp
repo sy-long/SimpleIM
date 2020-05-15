@@ -1,7 +1,6 @@
 #include "registereddialog.h"
 #include "ui_registereddialog.h"
 #include "../../public/XMLtool.h"
-
 registeredDialog::registeredDialog(socketConnect *tsc,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::registeredDialog),
