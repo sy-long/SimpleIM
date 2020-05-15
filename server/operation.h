@@ -22,6 +22,7 @@ class operation{
         int addfriend(XMLParse::xml_t *,eventloop *);
         int getfriendlist(XMLParse::xml_t *,vector<friendlistinfo> *);
         int communication(XMLParse::xml_t *,eventloop *);
+        int delfriend(XMLParse::xml_t *,eventloop *);
 };
 
 #endif

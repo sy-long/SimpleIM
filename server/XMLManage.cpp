@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
 void XMLManage::setdata(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
 {
     dataDispose(xmltp,fdptr,loop);
@@ -125,6 +124,63 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                     <item>添加成功</item> \
                     <from>"+xmltp->child[3]->LabelValue+"</from> \
                     <fromname>"+xmltp->child[5]->LabelValue+"</fromname> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+            }
+            else if(xmltp->child[1]->LabelValue=="delfriends")
+            {
+                ret=oper.delfriend(xmltp,loop);
+                if(ret==-1)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>删除失败，数据库错误</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==-2)
+                {
+                    
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>删除失败，没有该用户</item> \
+                    </iq>";
+                    
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==-3)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>删除失败，该用户不在线</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==0)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>set</type> \
+                    <item>删除成功!</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==1)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>set</type> \
+                    <item>好友删除通知</item> \
+                    <from>"+xmltp->child[3]->LabelValue+"</from> \
                     </iq>";
                     write(fd,sendbuf.c_str(),sendbuf.size());
                 }
