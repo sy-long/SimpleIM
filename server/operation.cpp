@@ -69,6 +69,7 @@ int operation::login(XMLParse::xml_t *xmltp,eventloop *loop,int fd)
     MYSQL_RES *res_ptr;
     int row;
     MYSQL_ROW result_row;
+    cout<<"ok"<<endl;
     sprintf(sql,"select * from userbasicinfo where id='%s'",xmltp->child[1]->LabelValue.c_str());
     res=mysql_query(&conn,sql);
     if(res)

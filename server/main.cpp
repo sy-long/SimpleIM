@@ -35,8 +35,11 @@ void * handle_call(void * fdptr)
     while(1)
     {
         num=read(fd,request,BUFSIZ);
-        if(num==-1)
+        if(num==0)
+        {
+            cout<<"ok"<<endl;
             break;
+        }
         labelmanage.setdata(request,(int *)fdptr,loop);
     }
     labelmanage.logout((int *)fdptr);
