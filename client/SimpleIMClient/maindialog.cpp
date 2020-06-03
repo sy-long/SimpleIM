@@ -26,7 +26,6 @@ MainDialog::MainDialog(QString Nowid,socketConnect *tsc,QWidget *parent) :
     setWindowTitle("SimpleIM");
     connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
     initfriendlist();
-    connect(ui->listWidget,SIGNAL(currentRowChanged(int)),ui->stackedWidget,SLOT(on_listWidget_clicked()));
     ui->stackedWidget->addWidget(new ChatHelloDialog);
     ui->stackedWidget->setCurrentIndex(2);
 }
@@ -36,7 +35,7 @@ void MainDialog::on_listWidget_clicked()
     static int count=0;
     int row=ui->listWidget->currentRow();
     Contact_window_info tinfo;
-    for(int i=0;i<contact_table.size();i++)
+    for(unsigned int i=0;i<contact_table.size();i++)
     {
         if(row==contact_table[i].listitemindex)
         {
@@ -147,7 +146,7 @@ void MainDialog::slot_recvmessage()
                 QMessageBox::warning(this,"通知",xmltp->child[1]->LabelValue.c_str(),QMessageBox::Ok);
                 int index;
                 Contact_window_info tinfo;
-                for(int i=0;i<contact_table.size();i++)
+                for(unsigned int i=0;i<contact_table.size();i++)
                 {
                     if(xmltp->child[2]->LabelValue==contact_table[i].uid)
                     {
@@ -169,7 +168,7 @@ void MainDialog::slot_recvmessage()
             {
                 chatDialog *ptr;
                 int index=2;
-                for(int i=2;i<xmltp->child.size();i+=2)
+                for(unsigned int i=2;i<xmltp->child.size();i+=2)
                 {
                     Contact_window_info tinfo;
                     ui->listWidget->insertItem(index-2,xmltp->child[i+1]->LabelValue.c_str());
@@ -195,7 +194,7 @@ void MainDialog::slot_recvmessage()
         {
             string uid = xmltp->child[1]->LabelValue;
             Contact_window_info tinfo;
-            for(int i=0;i<contact_table.size();i++)
+            for(unsigned int i=0;i<contact_table.size();i++)
             {
                 if(uid==contact_table[i].uid)
                 {
@@ -239,7 +238,7 @@ void MainDialog::on_pushButton_2_clicked()
     NowPage=(chatDialog *)ui->stackedWidget->currentWidget();
     int index=ui->stackedWidget->currentIndex();
     Contact_window_info tinfo;
-    for(int i=0;i<contact_table.size();i++)
+    for(unsigned int i=0;i<contact_table.size();i++)
     {
         if(index==contact_table[i].stackitemindex)
         {
@@ -256,7 +255,7 @@ void MainDialog::on_pushButton_3_clicked()
     {
         int index=ui->listWidget->currentRow();
         Contact_window_info tinfo;
-        for(int i=0;i<contact_table.size();i++)
+        for(unsigned int i=0;i<contact_table.size();i++)
         {
             if(index==contact_table[i].listitemindex)
             {
