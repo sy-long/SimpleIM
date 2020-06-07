@@ -276,3 +276,11 @@ void MainDialog::on_pushButton_3_clicked()
          sc->TCP_sendMesSocket->write(sendMessagexml.toUtf8());
     }
 }
+
+void MainDialog::on_pushButton_4_clicked()
+{
+    disconnect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
+    updataDialog udDialog(id,sc,this);
+    udDialog.exec();
+    connect(sc->TCP_sendMesSocket,SIGNAL(readyRead()),this,SLOT(slot_recvmessage()));
+}
