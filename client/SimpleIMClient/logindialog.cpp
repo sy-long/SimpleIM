@@ -2,7 +2,6 @@
 #include "ui_logindialog.h"
 #include "../../public/XMLtool.h"
 #include "maindialog.h"
-#include <windows.h>
 loginDialog::loginDialog(socketConnect *tsc,QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::loginDialog)

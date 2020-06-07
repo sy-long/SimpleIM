@@ -25,7 +25,8 @@ SOURCES += \
     logindialog.cpp \
     maindialog.cpp \
     registereddialog.cpp \
-    socketconnect.cpp
+    socketconnect.cpp \
+    updatadialog.cpp
 
 HEADERS += \
     ../../public/XMLtool.h \
@@ -35,7 +36,8 @@ HEADERS += \
     login.h \
     maindialog.h \
     registereddialog.h \
-    socketconnect.h
+    socketconnect.h \
+    updatadialog.h
 
 FORMS += \
     addfriendsdialog.ui \
@@ -43,7 +45,8 @@ FORMS += \
     chathellodialog.ui \
     logindialog.ui \
     maindialog.ui \
-    registereddialog.ui
+    registereddialog.ui \
+    updatadialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
