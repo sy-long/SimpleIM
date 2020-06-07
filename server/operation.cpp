@@ -69,7 +69,6 @@ int operation::login(XMLParse::xml_t *xmltp,eventloop *loop,int fd)
     MYSQL_RES *res_ptr;
     int row;
     MYSQL_ROW result_row;
-    cout<<"ok"<<endl;
     sprintf(sql,"select * from userbasicinfo where id='%s'",xmltp->child[1]->LabelValue.c_str());
     res=mysql_query(&conn,sql);
     if(res)
@@ -508,5 +507,45 @@ int operation::communication(XMLParse::xml_t *xmltp,eventloop *loop)
         cout<<"getm"<<endl;
         mysql.closeconn();
         return 1;
+    }
+}
+
+int operation::updataname(XMLParse::xml_t *xmltp)
+{
+    database mysql;
+    MYSQL conn=*(mysql.getconn());
+    int res;
+    char sql[100];
+    sprintf(sql,"update userbasicinfo set name='%s' where id='%s'",xmltp->child[3]->LabelValue.c_str(),xmltp->child[2]->LabelValue.c_str());
+    res=mysql_query(&conn,sql);
+    if(res)
+    {
+        mysql.closeconn();
+        return -1;
+    }
+    else
+    {
+        sprintf(sql,"update friends set id1name='%s' where id1='%s'",xmltp->child[3]->LabelValue.c_str(),xmltp->child[2]->LabelValue.c_str());
+        res=mysql_query(&conn,sql); 
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            sprintf(sql,"update friends set id2name='%s' where id2='%s'",xmltp->child[3]->LabelValue.c_str(),xmltp->child[2]->LabelValue.c_str());
+            res=mysql_query(&conn,sql); 
+            if(res)
+            {
+                mysql.closeconn();
+                return -1;
+            }
+            else 
+            {
+                mysql.closeconn();
+                return 0;
+            }
+        }
     }
 }

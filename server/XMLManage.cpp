@@ -185,6 +185,30 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
                     write(fd,sendbuf.c_str(),sendbuf.size());
                 }
             }
+            else if(xmltp->child[1]->LabelValue=="updataname")
+            {
+                ret=oper.updataname(xmltp);
+                if(ret==-1)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>修改失败，数据库错误</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+                else if(ret==0)
+                {
+                    sendbuf+=
+                    "<?xml version=\"1.0\"?> \
+                    <iq> \
+                    <type>result</type> \
+                    <item>修改成功</item> \
+                    </iq>";
+                    write(fd,sendbuf.c_str(),sendbuf.size());
+                }
+            }
         }
         if(xmltp->child[0]->LabelValue=="get")
         {

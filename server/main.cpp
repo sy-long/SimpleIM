@@ -37,7 +37,6 @@ void * handle_call(void * fdptr)
         num=read(fd,request,BUFSIZ);
         if(num==0)
         {
-            cout<<"ok"<<endl;
             break;
         }
         labelmanage.setdata(request,(int *)fdptr,loop);
