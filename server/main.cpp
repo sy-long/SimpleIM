@@ -52,6 +52,8 @@ int main(int ac,char*av[])
     pthread_t worker;
     sock=m.createsocket(8888);
     attrinit(&attr);
+    XMLManage *tManage = new XMLManage;
+    tManage->initmysql();
     while(1)
     {
         fd=accept(sock,NULL,NULL);

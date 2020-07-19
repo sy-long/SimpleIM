@@ -14,6 +14,7 @@ class XMLManage
         void setdata(XMLParse::xml_t *,int *,eventloop *);
         void setdata(char *,int *,eventloop *);
         void logout(int *);
+        int initmysql();
 };
 
 #endif

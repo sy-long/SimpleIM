@@ -24,6 +24,7 @@ class operation{
         int communication(XMLParse::xml_t *,eventloop *);
         int delfriend(XMLParse::xml_t *,eventloop *);
         int updataname(XMLParse::xml_t *);
+        int initmysql();
 };
 
 #endif

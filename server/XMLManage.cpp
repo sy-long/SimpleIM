@@ -351,3 +351,10 @@ void XMLManage::dataDispose(XMLParse::xml_t *xmltp,int *fdptr,eventloop *loop)
      int fd=*(fdptr);
      oper.logout(fd);
  }
+
+ int XMLManage::initmysql()
+ {
+     int ret;
+     ret=oper.initmysql();
+     return ret;
+ }

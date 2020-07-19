@@ -549,3 +549,39 @@ int operation::updataname(XMLParse::xml_t *xmltp)
         }
     }
 }
+int operation::initmysql()
+{
+    database mysql;
+    MYSQL conn=*(mysql.getconn());
+    int res;
+    char sql[100];
+    sprintf(sql,"update online set state='%s'",0);
+    res=mysql_query(&conn,sql);
+    if(res)
+    {
+        mysql.closeconn();
+        return -1;
+    }
+    else
+    {
+        sprintf(sql,"update online set pid='%s'",0);
+        res=mysql_query(&conn,sql);
+        if(res)
+        {
+            mysql.closeconn();
+            return -1;
+        }
+        else
+        {
+            sprintf(sql,"update online set sockfd='%s'",0);
+            res=mysql_query(&conn,sql);
+            if(res)
+            {
+                mysql.closeconn();
+                return -1;
+            }
+            else
+                return 0;
+        }
+    }
+}
